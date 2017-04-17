@@ -3,7 +3,7 @@ package com.jasonleaster.designpattern.observer.builtin;
 import java.util.Observable;
 
 /**
- * Author: Administrator
+ * Author: jasonleaster
  * Date  : 2017/4/16
  * Email : jasonleaster@gmail.com
  */

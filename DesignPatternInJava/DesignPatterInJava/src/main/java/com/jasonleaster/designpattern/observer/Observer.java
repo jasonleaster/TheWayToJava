@@ -24,4 +24,13 @@ public interface Observer {
      * @param subject 传入目标对象，方便获取相应的目标对象
      */
     void update(Subject subject);
+
+    /**
+     * 为了更加灵活的对特定的观察者发布信息，这里添加了以下两个接口
+     * 设置以及获取观察者的名词等类型信息，进一步的，在Subject的实现类中，
+     * 遍历所有的观察者对象，根据类型信息进行判断，不同的观察者可以发送不同的信息
+     *
+     * ++ public void setObserverType(String observerType);
+     * ++ public String getObserverType();
+     */
 }

@@ -3,7 +3,7 @@ package com.jasonleaster.designpattern.factory;
 import com.jasonleaster.designpattern.factory.model.Button;
 
 /**
- * Author: Administrator
+ * Author: jasonleaster
  * Date  : 2017/4/16
  * Email : jasonleaster@gmail.com
  */

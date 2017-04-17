@@ -9,7 +9,7 @@ import java.util.List;
  * Date  : 2017/4/16
  * Email : jasonleaster@gmail.com
  */
-public class Subject {
+public abstract class Subject {
 
     private List<Observer> observers = new ArrayList<Observer>();
 
@@ -31,6 +31,11 @@ public class Subject {
 
     /**
      * 通知所有注册的观察者对象
+     *
+     * 这里类似于广播的性质，对所有观察者进行信息传递，这种方式并不是最佳的。
+     *
+     * 如果某些信息只想特定的观察者接受，那么这种实现就会有问题。
+     *
      */
     protected void notifyObservers(){
         for(Observer observer : observers){
