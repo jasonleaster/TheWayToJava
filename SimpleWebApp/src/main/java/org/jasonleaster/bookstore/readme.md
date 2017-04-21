@@ -1,0 +1,1 @@
+bookstore包下面是一个完整独立的web app小应用

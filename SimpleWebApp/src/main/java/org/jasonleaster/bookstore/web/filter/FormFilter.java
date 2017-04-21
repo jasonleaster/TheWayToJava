@@ -9,20 +9,19 @@
  *****************************************************************/
 package org.jasonleaster.bookstore.web.filter;
 
+import java.io.IOException;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.jasonleaster.bookstore.model.User;
 import org.jasonleaster.bookstore.util.AttributesKey;
 import org.jasonleaster.bookstore.util.URLs;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
 public class FormFilter extends OncePerRequestFilter {
 
-    String[] NOT_FILTER = new String[] {URLs.LOGIN, URLs.REGISTER, URLs.PATH_STATIC};
+    String[] NOT_FILTER = new String[] {URLs.LOGIN, URLs.REGISTER, URLs.PATH_STATIC, URLs.PATH_TUTORIAL};
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

@@ -33,4 +33,7 @@ public class URLs {
 
     // static resources
     public final static String PATH_STATIC  = "/static/";
+
+    // tutorial
+    public final static String PATH_TUTORIAL  = "/tutorial/";
 }
