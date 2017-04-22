@@ -5,11 +5,13 @@ package org.jasonleaster.springtutorial.model;
  * Date  : 2017/4/22
  * Email : jasonleaster@gmail.com
  */
-public class POJO {
+public class User {
 
     private String name;
 
     private int age;
+
+    private Contact contact;
 
     public String getName() {
         return name;
@@ -25,5 +27,13 @@ public class POJO {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public Contact getContact() {
+        return contact;
+    }
+
+    public void setContact(Contact contact) {
+        this.contact = contact;
     }
 }
