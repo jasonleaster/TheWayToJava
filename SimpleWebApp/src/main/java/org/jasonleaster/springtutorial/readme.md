@@ -1,25 +1,24 @@
-Spring MVC 数据绑定
+RESTful, Resource Representational State Transfer
 
-Data binding is a general technique that binds data sources from the provider and consumer together and synchronizes them.
+RESTful 表现层 -- Representational
 
-基本类型
-key是必须传的，而且数据字符串对应的数据必须是相应的基本类型数据
+* 文本:  txt、html、xml、json、二进制
+* 图片: jpg、png
+* http协议的content-type和accept
+* 案例: 书籍book是一个资源，获取不同的格式
 
-包装类型
-非必须传的
+RESTful 状态转化 -- State Transfer
 
-数组
+幂等性：每次HTTP请求相同的参数，相同的URI，产生相同的结果
 
+GET 获取资源
+POST 创建资源（不具有幂等性）
+PUT 创建（更新）
+DELETE 删除资源
 
+1. 每一个URI代表一种**资源**
+2. 客户端和服务器之间, 传递这种资源的某种表现层
+3. 客户端通过**HTTP动词**, 对服务器端资源进行操作，实现“表现层的状态转化”
 
-简单对象
-
-多层级对象
-
-同属性对象
-
-propertyEditor
-
-Formatter
-
-Converter
+Recommended Articles:
+http://blog.720ui.com/2016/restful_idempotent/

@@ -5,10 +5,18 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.jasonleaster.bookstore.util.URLs;
-import org.jasonleaster.springtutorial.model.User;
+import org.jasonleaster.springtutorial.ext.form.Admin;
+import org.jasonleaster.springtutorial.ext.form.User;
+import org.jasonleaster.springtutorial.ext.form.UserListForm;
+import org.jasonleaster.springtutorial.ext.form.UserMapForm;
+import org.jasonleaster.springtutorial.ext.form.UserSetForm;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -99,7 +107,104 @@ public class TutorialController {
     }
 
 
+    @InitBinder("user")
+    public void initUser(WebDataBinder binder) {
+        binder.setFieldDefaultPrefix("user.");
+    }
+
+    @InitBinder("admin")
+    public void initAdmin(WebDataBinder binder) {
+        binder.setFieldDefaultPrefix("admin.");
+    }
+
+    /**
+     * 同属性的多对象绑定
+     *
+     * Admin 和 User类中都有 age 和name属性
+     *
+     * Request A:
+     *      localhost:8080/tutorial/objectType.do?age=10&name=jasonleaster&contact.phone=110
+     * Response of A:
+     *      [{"name":"jasonleaster","age":10,"contact":{"phone":"110"}},{"name":"jasonleaster","age":10}]
+     *
+     * Request B: // 利用initBinder指明前缀
+     *      localhost:8080/tutorial/objectComplexType.do?user.age=10&user.name=jasonleaster&admin.name=anabella
+     * Response of B:
+     *  [{"name":"jasonleaster","age":10,"contact":null},{"name":"anabella","age":0}]
+     */
+    @RequestMapping(value = "objectComplexType.do", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String objectComplexType(User user, Admin admin) throws Exception{
+        ObjectMapper mapper = new ObjectMapper();
+        List list = new LinkedList();
+        list.add(user);
+        list.add(admin);
+        String jsonStr = mapper.writeValueAsString(list);
+        return  jsonStr;
+    }
+
+    // localhost:8080/tutorial/listType.do?users[0].name=jasonleaster&users[1].name=anabella
+    @RequestMapping(value = "listType.do", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String listType(UserListForm users) throws Exception{
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonStr = mapper.writeValueAsString(users);
+        return  jsonStr;
+    }
+
+    // localhost:8080/tutorial/setType.do?users[0].name=jasonleaster&users[1].name=anabella
+    @RequestMapping(value = "setType.do", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String setType(UserSetForm users) throws Exception{
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonStr = mapper.writeValueAsString(users);
+        return  jsonStr;
+    }
+
+    /**
+     *
+     * Request URL:
+     * localhost:8080/tutorial/mapType.do?users["jason"].name=jasonleaster&users["anabella"].name=anabella
+     *
+     * Return :
+     *      {"users":{"anabella":{"name":"anabella","age":0,"contact":null},"jason":{"name":"jasonleaster","age":0,"contact":null}}}
+     */
+    @RequestMapping(value = "mapType.do", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String mapType(UserMapForm users) throws Exception{
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonStr = mapper.writeValueAsString(users);
+        return  jsonStr;
+    }
+
+    /**
+     *  localhost:8080/tutorial/jsonType.do
+     * {"name":"jasonleaster","age":24,"contact":null}
+     */
+    @RequestMapping(value = "jsonType.do", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String jsonType(@RequestBody User user) throws Exception{
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonStr = mapper.writeValueAsString(user);
+        return  jsonStr;
+    }
 
 
-
+    /**
+     *  localhost:8080/tutorial/xmlType.do
+     *
+     *  <user>
+             <name>jasonleaster</name>
+             <age>24</age>
+         </user>
+     *
+     *
+     */
+    @RequestMapping(value = "xmlType.do", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String xmlType(@RequestBody User user) throws Exception{
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonStr = mapper.writeValueAsString(user);
+        return  jsonStr;
+    }
 }

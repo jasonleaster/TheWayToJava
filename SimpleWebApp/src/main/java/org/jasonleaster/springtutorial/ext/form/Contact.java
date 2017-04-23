@@ -1,4 +1,4 @@
-package org.jasonleaster.springtutorial.model;
+package org.jasonleaster.springtutorial.ext.form;
 
 /**
  * Author: jasonleaster
