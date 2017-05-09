@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jasonleaster.seckill.dao.OrderMapper">
+
+    <select id="queryAll" resultType="org.jasonleaster.order.model.Order">
+        SELECT
+            commodity.commodityId       AS commodityId,
+            commodity.commodityName     AS commodityName,
+            commodity.reservedNumber    AS reservedNumber,
+            commodity.startTime         AS startTime,
+            commodity.endTime           AS endTime,
+            commodity.createTime        AS createTime
+        FROM
+            commodityorder AS commodity
+        <if test="sortColumn != null"></if>
+        <choose>
+            <when test="sortColumn == commodityName">
+                ORDER BY commodityName
+            </when>
+            <when test="sortColumn == reservedNumber">
+                ORDER BY reservedNumber
+            </when>
+            <otherwise>
+                ORDER BY commodityName
+            </otherwise>
+        </choose>
+
+        <if test="pageInfo != null">
+            limit #{pageInfo.startRow},#{pageInfo.size}
+        </if>
+    </select>
+
+    <select id="queryById" resultType="org.jasonleaster.order.model.Order" parameterType="long">
+        SELECT
+            commodity.commodityId       AS commodityId,
+            commodity.commodityName     AS commodityName,
+            commodity.reservedNumber    AS reservedNumber,
+            commodity.startTime         AS startTime,
+            commodity.endTime           AS endTime,
+            commodity.createTime        AS createTime
+        FROM
+            commodityorder AS commodity
+        where commodityId = #{commodityId}
+    </select>
+
+    <update id="reduceNumber">
+        UPDATE commodityorder
+        SET
+            reservedNumber = reservedNumber-1
+        WHERE
+            commodityId = #{commodityId}
+            AND reservedNumber > 0
+            AND startTime <![CDATA[<=]]> #{payTime}
+            AND endTime >= #{killTime};
+    </update>
+
+    <!-- Mybatis 调用存储过程 执行交易-->
+    <select id="killByProcedure" statementType="CALLABLE">
+        call execute_seckill(
+            #{commodityId,  jdbcType=BIGINT,    mode=IN},
+            #{phone,        jdbcType=BIGINT,    mode=IN},
+            #{killTime,     jdbcType=TIMESTAMP, mode=IN},
+            #{result,       jdbcType=INTEGER,   mode=OUT}
+        )
+    </select>
+</mapper>
