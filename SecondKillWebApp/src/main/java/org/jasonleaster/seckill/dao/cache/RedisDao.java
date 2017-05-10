@@ -1,55 +1,42 @@
 package org.jasonleaster.seckill.dao.cache;
 
-//import com.dyuproject.protostuff.LinkedBuffer;
-//import com.dyuproject.protostuff.ProtostuffIOUtil;
-//import com.dyuproject.protostuff.runtime.RuntimeSchema;
-import org.jasonleaster.seckill.model.Seckill;
+import org.jasonleaster.seckill.model.Order;
+import org.jasonleaster.seckill.utils.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-/**
- * Created by Troy on 2016/10/4.
- */
+
 @Repository
 public class RedisDao {
+
+    private static final Logger logger = LoggerFactory.getLogger(RedisDao.class);
+
     private JedisPool jedisPool;    //redis连接池
+
+    public RedisDao() {}
 
     public RedisDao(String ip, int port){
         jedisPool = new JedisPool(ip,port);
     }
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    //获取Seckill对象的sechema，sechema保存了类的属性等信息
-//    private RuntimeSchema<Seckill> schema = RuntimeSchema.createFrom(Seckill.class);
-
-
-    public RedisDao() {}
-
     /**
      * 从缓存中读取seckill对象
-     * @param seckillId
+     * @param commodityId
      * @return
      */
-    public Seckill getSeckill(long seckillId){
-        //redis逻辑操作
+    public Order getOrder(long commodityId){
         try{
             //使用了redis的客户端Jedis来操作缓存
             Jedis jedis = jedisPool.getResource();
             try {
-                String key="seckill:"+seckillId;
-                //redis并没有实现内部序列化操作
-                //get->byte[]->反序列化->Object(Seckill)
-                //采用自定义序列化:速度快、空间小
-                //protostuff:pojo
-                byte[] bytes = jedis.get(key.getBytes());
-                if (bytes !=null){
-//                    Seckill seckill = schema.newMessage(); //创建一个空对象
-//                    ProtostuffIOUtil.mergeFrom(bytes,seckill,schema);//反序列化
-                    return null;
+                String key= "order:"+ commodityId;
+
+                String jsonstr = jedis.get(key);
+                if (jsonstr != null){
+                    return (Order) JsonUtil.toObject(jsonstr, Order.class);
                 }
             }finally {
                 jedis.close();
@@ -62,20 +49,19 @@ public class RedisDao {
 
     /**
      * 将数据放入redis缓存
-     * @param seckill
+     * @param order
      * @return
      */
-    public String putSeckill(Seckill seckill){
-        //set Object(Seckill) ->序列化 -> byte[]
+    public String putOrder (Order order){
         try {
             Jedis jedis = jedisPool.getResource();
             try {
-                String key ="seckill:"+seckill.getSeckillId();
+                String key ="order:"+ order.getOrderId();
                 //序列化，第三个参数是缓冲器
-                byte[] bytes = null;//= ProtostuffIOUtil.toByteArray(seckill,schema, LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE));
+                String jsonValue = JsonUtil.toJson(order);
                 //超时缓存
                 int timeout = 60*60; //1个小时
-                String result = jedis.setex(key.getBytes(),timeout,bytes);
+                String result = jedis.setex(key, timeout, jsonValue);
                 return result; //"OK"
             }finally {
                 jedis.close();

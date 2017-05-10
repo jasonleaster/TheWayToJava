@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jasonleaster.seckill.dao.SuccessDealMapper">
+
+    <!-- 主键冲突，会报错。用ignore会忽略错误，返回影响的函数为0 -->
+    <insert id="insertSuccessDeal">
+        INSERT IGNORE INTO
+            successDeals(commodityId, userPhone, state)
+        VALUES (#{commodityId}, #{userPhone}, 0)
+    </insert>
+
+    <!--根据id查询SuccessKilled并携带Seckill实体-->
+    <!--如何告诉MyBatis把结果映射到SuccessDeal同时映射seckill属性-->
+    <!--可以自由控制SQL-->
+    <select id="queryByIdWithSeckill" resultType="org.jasonleaster.seckill.model.SuccessDeal">
+       SELECT
+          deals.commodityId AS commodityId,
+          deals.userPhone   AS userPhone,
+          deals.createTime  AS createTime,
+          deals.state		AS state,
+          commodity.commodityId 	AS commodityid,
+          commodity.commodityName 	AS commodityName,
+          commodity.reservedNumber  AS reservedNumber,
+          commodity.startTime       AS startTime,
+          commodity.endTime         AS endTime,
+          commodity.createTime      AS createTime
+        FROM successdeals deals
+        JOIN commodityorder commodity ON deals.commodityId = commodity.commodityId
+        WHERE deals.commodityId=#{commodityId} AND deals.user_phone=${userPhone}
+    </select>
+
+</mapper>
