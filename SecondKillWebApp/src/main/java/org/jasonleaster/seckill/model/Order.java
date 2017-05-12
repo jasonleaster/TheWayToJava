@@ -2,8 +2,8 @@ package org.jasonleaster.seckill.model;
 
 import java.util.Date;
 
-public class Seckill {
-    private Long seckillId;
+public class Order {
+    private Long orderId;
 
     private String name;
 
@@ -15,12 +15,12 @@ public class Seckill {
 
     private Date createTime;
 
-    public Long getSeckillId() {
-        return seckillId;
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public void setSeckillId(Long seckillId) {
-        this.seckillId = seckillId;
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
     public String getName() {

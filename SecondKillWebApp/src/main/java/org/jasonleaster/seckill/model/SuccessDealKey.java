@@ -1,6 +1,6 @@
 package org.jasonleaster.seckill.model;
 
-public class SuccessKilledKey {
+public class SuccessDealKey {
     private Long seckillId;
 
     private Long userPhone;

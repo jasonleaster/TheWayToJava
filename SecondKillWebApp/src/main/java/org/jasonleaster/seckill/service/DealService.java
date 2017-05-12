@@ -1,39 +1,40 @@
 package org.jasonleaster.seckill.service;
 
+import com.github.pagehelper.PageInfo;
 import java.util.List;
-import org.jasonleaster.seckill.dto.Exposer;
+import org.jasonleaster.seckill.dto.BusinessDealInfo;
 import org.jasonleaster.seckill.dto.SecKillExcution;
 import org.jasonleaster.seckill.exception.RepeatKillException;
 import org.jasonleaster.seckill.exception.SeckillCloseException;
 import org.jasonleaster.seckill.exception.SeckillException;
-import org.jasonleaster.seckill.model.Seckill;
+import org.jasonleaster.seckill.model.Order;
 
 /**
  * 业务接口：站在使用者角度设计接口
  * 三个方面：方法定义粒度，参数，return类型
  * Created by Troy on 2016/10/2.
  */
-public interface SeckillService {
+public interface DealService {
+    /**
+     * 查询单个秒杀记录
+     * @param commodityId 商品Id
+     * @return 订单详情
+     */
+    Order getById(long commodityId);
+
     /**
      * 查询所有秒杀记录
      * @return
      */
-    List<Seckill> getSeckillList();
-
-    /**
-     * 查询单个秒杀记录
-     * @param seckillId
-     * @return
-     */
-    Seckill getById(long seckillId);
+    List<Order> getDealsList(PageInfo pageInfo, String sortColumn);
 
     /**
      * 秒杀开启是输出秒杀接口地址，
      * 佛祖而输出系统时间和秒杀时间
-     * @param seckillId
+     * @param commodityId 商品Id
      * @return
      */
-    Exposer exportSeckillUrl(long seckillId);
+    BusinessDealInfo exportDealUrl(long commodityId);
 
     /**
      * 执行秒杀操作

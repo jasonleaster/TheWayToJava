@@ -2,7 +2,7 @@ package org.jasonleaster.seckill.model;
 
 import java.util.Date;
 
-public class SuccessKilled extends SuccessKilledKey {
+public class SuccessDeal extends SuccessDealKey {
     private Byte state;
 
     private Date createTime;
