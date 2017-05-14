@@ -1,7 +1,7 @@
 package org.jasonleaster.seckill.dto;
 
-import org.jasonleaster.seckill.enums.SeckillStateEnum;
-import org.jasonleaster.seckill.model.SuccessKilled;
+import org.jasonleaster.seckill.enums.DealStateEnum;
+import org.jasonleaster.seckill.model.SuccessDeal;
 
 /**
  * Author: Administrator
@@ -17,16 +17,16 @@ public class SecKillExcution {
     //状态表示
     private String stateInfo;
     //秒杀成功对象
-    private SuccessKilled successKilled;
+    private SuccessDeal successDeal;
 
-    public SecKillExcution(long seckillId, SeckillStateEnum stateEnum, SuccessKilled successKilled) {
+    public SecKillExcution(long seckillId, DealStateEnum stateEnum, SuccessDeal successDeal) {
         this.seckillId = seckillId;
         this.state = stateEnum.getState();
         this.stateInfo = stateEnum.getStateInfo();
-        this.successKilled = successKilled;
+        this.successDeal = successDeal;
     }
 
-    public SecKillExcution(long seckillId, SeckillStateEnum stateEnum) {
+    public SecKillExcution(long seckillId, DealStateEnum stateEnum) {
         this.seckillId = seckillId;
         this.state = stateEnum.getState();
         this.stateInfo = stateEnum.getStateInfo();
@@ -56,12 +56,12 @@ public class SecKillExcution {
         this.stateInfo = stateInfo;
     }
 
-    public SuccessKilled getSuccessKilled() {
-        return successKilled;
+    public SuccessDeal getSuccessDeal() {
+        return successDeal;
     }
 
-    public void setSuccessKilled(SuccessKilled successKilled) {
-        this.successKilled = successKilled;
+    public void setSuccessDeal(SuccessDeal successDeal) {
+        this.successDeal = successDeal;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class SecKillExcution {
                 "seckillId=" + seckillId +
                 ", state=" + state +
                 ", stateInfo='" + stateInfo + '\'' +
-                ", successKilled=" + successKilled +
+                ", successDeal=" + successDeal +
                 '}';
     }
 }

@@ -26,7 +26,7 @@ public class Views {
 
     public static final String RECORD_RESULT_TABLE = "record/resultTable";
 
-    public static final String SEC_KILL_LIST   = "seckill/list";
-    public static final String SEC_KILL_DETAIL = "seckill/detail";
+    public static final String SEC_KILL_LIST   = "scramble/list";
+    public static final String SEC_KILL_DETAIL = "scramble/detail";
 
 }

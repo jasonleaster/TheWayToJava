@@ -7,7 +7,7 @@ import org.jasonleaster.seckill.dto.SecKillExcution;
 import org.jasonleaster.seckill.exception.RepeatKillException;
 import org.jasonleaster.seckill.exception.SeckillCloseException;
 import org.jasonleaster.seckill.exception.SeckillException;
-import org.jasonleaster.seckill.model.Order;
+import org.jasonleaster.seckill.model.Stock;
 
 /**
  * 业务接口：站在使用者角度设计接口
@@ -20,13 +20,13 @@ public interface DealService {
      * @param commodityId 商品Id
      * @return 订单详情
      */
-    Order getById(long commodityId);
+    Stock getById(long commodityId);
 
     /**
      * 查询所有秒杀记录
      * @return
      */
-    List<Order> getDealsList(PageInfo pageInfo, String sortColumn);
+    List<Stock> getDealsList(PageInfo pageInfo, String sortColumn);
 
     /**
      * 秒杀开启是输出秒杀接口地址，

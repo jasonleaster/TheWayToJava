@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.Map;
 import org.jasonleaster.seckill.dao.OrderMapper;
 import org.jasonleaster.seckill.dao.SuccessDealMapper;
-import org.jasonleaster.seckill.dao.cache.RedisDao;
+import org.jasonleaster.seckill.cache.RedisDao;
 import org.jasonleaster.seckill.dto.BusinessDealInfo;
 import org.jasonleaster.seckill.dto.SecKillExcution;
-import org.jasonleaster.seckill.enums.SeckillStateEnum;
+import org.jasonleaster.seckill.enums.DealStateEnum;
 import org.jasonleaster.seckill.exception.RepeatKillException;
 import org.jasonleaster.seckill.exception.SeckillCloseException;
 import org.jasonleaster.seckill.exception.SeckillException;
-import org.jasonleaster.seckill.model.Order;
+import org.jasonleaster.seckill.model.Stock;
 import org.jasonleaster.seckill.model.SuccessDeal;
 import org.jasonleaster.seckill.service.DealService;
 import org.slf4j.Logger;
@@ -44,14 +44,14 @@ public class DealServiceImpl implements DealService {
     private final String slate = "fj556klsdjp559qwd;krp#W%4$^$R##20239u8yrhfiosdh7#@4jheew53";
 
     @Override
-    public Order getById(long seckillId) {
+    public Stock getById(long seckillId) {
         return orderMapper.queryById(seckillId);
     }
 
     @Override
-    public List<Order> getDealsList(PageInfo pageInfo, String sortColumn) {
-        List<Order> orders = orderMapper.queryAll(pageInfo, sortColumn);
-        return orders;
+    public List<Stock> getDealsList(PageInfo pageInfo, String sortColumn) {
+        List<Stock> stocks = orderMapper.queryCommodityWithPagination(pageInfo, sortColumn);
+        return stocks;
     }
 
     @Override
@@ -59,20 +59,20 @@ public class DealServiceImpl implements DealService {
         //优化点：缓存优化.用户可能一直再刷页面。越热的产品访问越多
         //超时的基础上维护一致性
         //1.访问redis
-        Order order = redisDao.getOrder(commodityId);
-        if (order == null) {
+        Stock stock = redisDao.getOrder(commodityId);
+        if (stock == null) {
             //2.访问数据库
-            order = getById(commodityId);
-            if (order == null) {
+            stock = getById(commodityId);
+            if (stock == null) {
                 return new BusinessDealInfo(false, commodityId);
             } else {
                 //3.放入redis
-                redisDao.putOrder(order);
+                redisDao.putOrder(stock);
             }
         }
 
-        Date startTime = order.getStartTime();
-        Date endTime = order.getEndTime();
+        Date startTime = stock.getStartTime();
+        Date endTime = stock.getEndTime();
         Date nowTime = new Date();
         if (nowTime.getTime() < startTime.getTime()
                 || nowTime.getTime() > endTime.getTime()) {
@@ -121,7 +121,7 @@ public class DealServiceImpl implements DealService {
                 } else {
                     //秒杀成功
                     SuccessDeal successDeal = successDealMapper.queryByIdWithSeckill(seckillId, userPhone);
-                    return new SecKillExcution(seckillId, SeckillStateEnum.SUCCESS, successDeal);
+                    return new SecKillExcution(seckillId, DealStateEnum.SUCCESS, successDeal);
                 }
             }
 
@@ -155,13 +155,13 @@ public class DealServiceImpl implements DealService {
             int result =  0;//MapUtils.getInteger(map, "result", -2);
             if (result == 1) {
                 SuccessDeal successDeal = successDealMapper.queryByIdWithSeckill(seckillId, userPhone);
-                return new SecKillExcution(seckillId, SeckillStateEnum.SUCCESS, successDeal);
+                return new SecKillExcution(seckillId, DealStateEnum.SUCCESS, successDeal);
             } else {
-                return new SecKillExcution(seckillId, SeckillStateEnum.stateOf(result));
+                return new SecKillExcution(seckillId, DealStateEnum.stateOf(result));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return new SecKillExcution(seckillId, SeckillStateEnum.INNER_ERROR);
+            return new SecKillExcution(seckillId, DealStateEnum.INNER_ERROR);
         }
     }
 

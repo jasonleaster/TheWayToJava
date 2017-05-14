@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Param;
-import org.jasonleaster.seckill.model.Order;
+import org.jasonleaster.seckill.model.Stock;
 import org.springframework.stereotype.Repository;
 
 @Repository("orderMapper")
@@ -16,14 +16,14 @@ public interface OrderMapper {
      * @param seckillId
      * @return
      */
-    Order queryById(long seckillId);
+    Stock queryById(long seckillId);
 
     /**
      * 根据偏移量产寻秒杀商品列表
      * @param pageInfo 分页信息
      * @return 分页查询后的订单结果
      */
-    List<Order> queryAll(@Param("pageInfo") PageInfo pageInfo, @Param("sortColumn") String sortColumn);
+    List<Stock> queryCommodityWithPagination(@Param("pageInfo") PageInfo pageInfo, @Param("sortColumn") String sortColumn);
 
     /**
      * 减库存

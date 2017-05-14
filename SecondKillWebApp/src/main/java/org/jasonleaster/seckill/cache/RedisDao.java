@@ -1,6 +1,6 @@
-package org.jasonleaster.seckill.dao.cache;
+package org.jasonleaster.seckill.cache;
 
-import org.jasonleaster.seckill.model.Order;
+import org.jasonleaster.seckill.model.Stock;
 import org.jasonleaster.seckill.utils.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,16 +27,16 @@ public class RedisDao {
      * @param commodityId
      * @return
      */
-    public Order getOrder(long commodityId){
+    public Stock getOrder(long commodityId){
         try{
             //使用了redis的客户端Jedis来操作缓存
             Jedis jedis = jedisPool.getResource();
             try {
-                String key= "order:"+ commodityId;
+                String key= "stock:"+ commodityId;
 
                 String jsonstr = jedis.get(key);
                 if (jsonstr != null){
-                    return (Order) JsonUtil.toObject(jsonstr, Order.class);
+                    return (Stock) JsonUtil.toObject(jsonstr, Stock.class);
                 }
             }finally {
                 jedis.close();
@@ -49,16 +49,16 @@ public class RedisDao {
 
     /**
      * 将数据放入redis缓存
-     * @param order
+     * @param stock
      * @return
      */
-    public String putOrder (Order order){
+    public String putOrder (Stock stock){
         try {
             Jedis jedis = jedisPool.getResource();
             try {
-                String key ="order:"+ order.getOrderId();
+                String key ="stock:"+ stock.getCommodityId();
                 //序列化，第三个参数是缓冲器
-                String jsonValue = JsonUtil.toJson(order);
+                String jsonValue = JsonUtil.toJson(stock);
                 //超时缓存
                 int timeout = 60*60; //1个小时
                 String result = jedis.setex(key, timeout, jsonValue);

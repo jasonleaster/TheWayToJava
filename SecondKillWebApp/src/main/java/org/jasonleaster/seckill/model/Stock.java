@@ -2,8 +2,8 @@ package org.jasonleaster.seckill.model;
 
 import java.util.Date;
 
-public class Order {
-    private Long orderId;
+public class Stock {
+    private Long commodityId;
 
     private String name;
 
@@ -15,12 +15,12 @@ public class Order {
 
     private Date createTime;
 
-    public Long getOrderId() {
-        return orderId;
+    public Long getCommodityId() {
+        return  commodityId;
     }
 
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
+    public void getCommodityId(Long commodityId) {
+        this. commodityId = commodityId;
     }
 
     public String getName() {
