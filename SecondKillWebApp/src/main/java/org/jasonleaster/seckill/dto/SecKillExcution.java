@@ -11,7 +11,7 @@ import org.jasonleaster.seckill.model.SuccessDeal;
  */
 public class SecKillExcution {
     //秒杀id
-    private long seckillId;
+    private long commodityId;
     //秒杀执行结果状态
     private int state;
     //状态表示
@@ -19,25 +19,25 @@ public class SecKillExcution {
     //秒杀成功对象
     private SuccessDeal successDeal;
 
-    public SecKillExcution(long seckillId, DealStateEnum stateEnum, SuccessDeal successDeal) {
-        this.seckillId = seckillId;
+    public SecKillExcution(long commodityId, DealStateEnum stateEnum, SuccessDeal successDeal) {
+        this.commodityId = commodityId;
         this.state = stateEnum.getState();
         this.stateInfo = stateEnum.getStateInfo();
         this.successDeal = successDeal;
     }
 
-    public SecKillExcution(long seckillId, DealStateEnum stateEnum) {
-        this.seckillId = seckillId;
+    public SecKillExcution(long commodityId, DealStateEnum stateEnum) {
+        this.commodityId = commodityId;
         this.state = stateEnum.getState();
         this.stateInfo = stateEnum.getStateInfo();
     }
 
-    public long getSeckillId() {
-        return seckillId;
+    public long getCommodityId() {
+        return commodityId;
     }
 
-    public void setSeckillId(long seckillId) {
-        this.seckillId = seckillId;
+    public void setCommodityId(long commodityId) {
+        this.commodityId = commodityId;
     }
 
     public int getState() {
@@ -67,7 +67,7 @@ public class SecKillExcution {
     @Override
     public String toString() {
         return "SeckillExcution{" +
-                "seckillId=" + seckillId +
+                "commodityId=" + commodityId +
                 ", state=" + state +
                 ", stateInfo='" + stateInfo + '\'' +
                 ", successDeal=" + successDeal +

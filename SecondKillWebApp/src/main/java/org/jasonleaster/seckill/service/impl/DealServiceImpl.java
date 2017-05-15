@@ -71,13 +71,14 @@ public class DealServiceImpl implements DealService {
             }
         }
 
-        Date startTime = stock.getStartTime();
-        Date endTime = stock.getEndTime();
-        Date nowTime = new Date();
+        Date startTime  = stock.getStartTime();
+        Date endTime    = stock.getEndTime();
+        Date nowTime    = new Date();
         if (nowTime.getTime() < startTime.getTime()
                 || nowTime.getTime() > endTime.getTime()) {
             return new BusinessDealInfo(false, commodityId, nowTime.getTime(), startTime.getTime(), endTime.getTime());
         }
+
         //转化特定字符串的过程，不可逆
         String md5 = getMD5(commodityId);
         return new BusinessDealInfo(true, md5, commodityId);
@@ -108,7 +109,7 @@ public class DealServiceImpl implements DealService {
         try {
             //记录购买行为
             int insertCount = successDealMapper.insertSuccessDeal(seckillId, userPhone);
-            //唯一：seckillId,userPhone
+            //唯一：commodityId,userPhone
             if (insertCount <= 0) {
                 //重复秒杀
                 throw new RepeatKillException("seckill repeated");
@@ -137,14 +138,16 @@ public class DealServiceImpl implements DealService {
 
     }
 
-    public SecKillExcution executeSeckillProcedure(long seckillId, long userPhone, String md5) throws SeckillException, RepeatKillException, SeckillCloseException {
-        if (md5 == null || !md5.equals(getMD5(seckillId))) {
+    public SecKillExcution executeSeckillProcedure(long commodityId, long userPhone, String md5)
+        throws SeckillException, RepeatKillException, SeckillCloseException {
+
+        if (md5 == null || !md5.equals(getMD5(commodityId))) {
             throw new SeckillException("seckill data rewrite");
         }
 
         Date killTime = new Date();
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("seckillId", seckillId);
+        map.put("commodityId", commodityId);
         map.put("phone", userPhone);
         map.put("killTime", killTime);
         map.put("result", null);
@@ -152,16 +155,16 @@ public class DealServiceImpl implements DealService {
         try {
             orderMapper.killByProcedure(map);
             //获取result
-            int result =  0;//MapUtils.getInteger(map, "result", -2);
+            int result =  (int) map.get("result");
             if (result == 1) {
-                SuccessDeal successDeal = successDealMapper.queryByIdWithSeckill(seckillId, userPhone);
-                return new SecKillExcution(seckillId, DealStateEnum.SUCCESS, successDeal);
+                SuccessDeal successDeal = successDealMapper.queryByIdWithSeckill(commodityId, userPhone);
+                return new SecKillExcution(commodityId, DealStateEnum.SUCCESS, successDeal);
             } else {
-                return new SecKillExcution(seckillId, DealStateEnum.stateOf(result));
+                return new SecKillExcution(commodityId, DealStateEnum.stateOf(result));
             }
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             logger.error(e.getMessage(), e);
-            return new SecKillExcution(seckillId, DealStateEnum.INNER_ERROR);
+            return new SecKillExcution(commodityId, DealStateEnum.INNER_ERROR);
         }
     }
 

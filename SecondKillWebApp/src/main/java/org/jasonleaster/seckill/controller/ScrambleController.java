@@ -72,11 +72,11 @@ public class ScrambleController {
     }
 
     // ajax json
-    @RequestMapping(value = "/{seckillId}/exposer",
+    @RequestMapping(value = "/{commodityId}/expose",
             method = RequestMethod.POST,
             produces = {"application/json;charset=UTF-8"})
     @ResponseBody
-    public RestfulResponse<BusinessDealInfo> exposer(@PathVariable("commodityId") Long commodityId){
+    public RestfulResponse<BusinessDealInfo> expose(@PathVariable("commodityId") Long commodityId){
 
         RestfulResponse<BusinessDealInfo> result;
 
@@ -90,32 +90,40 @@ public class ScrambleController {
         return result;
     }
 
-    @RequestMapping(value = "/{seckillId}/{md5}/execution",
+    @RequestMapping(value = "/{commodityId}/{md5}/execution",
             method = RequestMethod.POST,
             produces = {"application/json;charset=UTF-8"})
     @ResponseBody
-    public RestfulResponse<SecKillExcution> execute(@PathVariable("seckillId") Long seckillId,
+    public RestfulResponse<SecKillExcution> execute(@PathVariable("commodityId") Long seckillId,
                                                   @PathVariable("md5") String md5,
                                                   @CookieValue(value = "killPhone",required = false) Long phone){
-        if (phone==null){
-            return new RestfulResponse<SecKillExcution>(false,"未注册");
+        if (phone == null){
+            return new RestfulResponse<SecKillExcution>(false,"Phone number is empty or error!");
         }
+
         RestfulResponse<SecKillExcution> result;
         try {
 //            SecKillExcution SecKillExcution = dealService.executeSeckill(seckillId,phone,md5);
-            SecKillExcution SecKillExcution = dealService
-                .executeSeckillProcedure(seckillId,phone,md5);
-            return new RestfulResponse<SecKillExcution>(true,SecKillExcution);
+
+            SecKillExcution secKillExcution = dealService.executeSeckillProcedure(seckillId,phone,md5);
+            return new RestfulResponse<SecKillExcution>(true, secKillExcution);
+
         }catch (RepeatKillException e){
+
             logger.error(e.getMessage(),e);
+
             SecKillExcution SecKillExcution = new SecKillExcution(seckillId, DealStateEnum.REPAET_ORDER);
             return new RestfulResponse<SecKillExcution>(true,SecKillExcution);
         }catch (SeckillCloseException e){
+
             logger.error(e.getMessage(),e);
+
             SecKillExcution SecKillExcution = new SecKillExcution(seckillId, DealStateEnum.END);
             return new RestfulResponse<SecKillExcution>(true,SecKillExcution);
         }catch (Exception e){
+
             logger.error(e.getMessage(),e);
+
             SecKillExcution SecKillExcution = new SecKillExcution(seckillId, DealStateEnum.INNER_ERROR);
             return new RestfulResponse<SecKillExcution>(true,SecKillExcution);
         }
