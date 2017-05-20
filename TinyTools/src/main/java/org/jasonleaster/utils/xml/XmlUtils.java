@@ -15,7 +15,7 @@ import org.jasonleaster.utils.io.Resources;
  * Date  : 2017/5/14
  * Email : jasonleaster@gmail.com
  */
-public class XmlUtils {
+public final class XmlUtils {
 
     private static final Logger log = Logger.getLogger(XmlUtils.class);
 
