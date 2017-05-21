@@ -1,0 +1,6 @@
+<customer>
+    <email-addresses>
+        <email-address>janed@example.com</email-address>
+        <email-address>jdoe@example.org</email-address>
+    </email-addresses>
+</customer>
