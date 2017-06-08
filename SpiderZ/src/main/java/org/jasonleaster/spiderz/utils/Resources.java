@@ -124,11 +124,16 @@ public class Resources {
      * @return The resource
      * @throws java.io.IOException If the resource cannot be found or read
      */
-    public static Properties getResourceAsProperties(String resource) throws IOException {
+    public static Properties getResourceAsProperties(String resource)  {
         Properties props = new Properties();
-        InputStream in = getResourceAsStream(resource);
-        props.load(in);
-        in.close();
+        try {
+            InputStream in = getResourceAsStream(resource);
+            props.load(in);
+            in.close();
+        }catch (IOException e){
+            return null;
+        }
+
         return props;
     }
 

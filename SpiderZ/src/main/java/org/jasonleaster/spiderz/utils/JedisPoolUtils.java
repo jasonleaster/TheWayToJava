@@ -1,6 +1,5 @@
 package org.jasonleaster.spiderz.utils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,19 +24,19 @@ public final class JedisPoolUtils {
 
     private static final Logger log = Logger.getLogger(JedisPoolUtils.class);
 
+    private static final Properties redisProperty = Resources.getResourceAsProperties("redis.properties");
+
     private static JedisPoolUtils instance;
 
     private static JedisPool jedisPool;
 
-    public static JedisPoolUtils getInstance() throws IOException {
+    public static JedisPoolUtils getInstance(){
         if (instance != null) {
             return instance;
         }
 
         synchronized (JedisPoolUtils.class){
             instance = new JedisPoolUtils();
-
-            Properties redisProperty = Resources.getResourceAsProperties("redis.properties");
 
             int maxActive = Integer.valueOf(redisProperty.getProperty("redis.pool.maxActive"));
             int maxIdle   = Integer.valueOf(redisProperty.getProperty("redis.pool.maxIdle"));
@@ -92,9 +91,6 @@ public final class JedisPoolUtils {
 
                 result = execute();
             } catch (Throwable e) {
-                if (null != jedis) {
-                    jedis.close();
-                }
                 throw new RuntimeException("Redis execute exception", e);
             } finally {
                 if (null != jedis) {
@@ -105,14 +101,32 @@ public final class JedisPoolUtils {
         }
     }
 
-    public Long addMessageIntoQueue(final int dbIndex, final String key, final String value){
+    public synchronized Long addMessagesIntoQueue(final int dbIndex, final String queueName, final List<String> values){
         return new Executor<Long>(jedisPool, dbIndex) {
             @Override
             Long execute() {
                 // 入队
-                return jedis.rpush(key, value);
+                if (values.size() <= 0){
+                    return -1L;
+                }
+
+                String[] valuesInArray = new String[values.size()];
+                values.toArray(valuesInArray);
+                return jedis.rpush(queueName, valuesInArray);
             }
         }.getResult();
+    }
+
+    public synchronized Long addMessagesIntoQueue(final int dbIndex, final String queueName, final int limitedQueueLen, final List<String> values){
+
+        long currentQueueLen = getListLen(dbIndex, queueName);
+
+        if (currentQueueLen > limitedQueueLen){
+            log.error("Exceed the limitation of the length of queue!");
+            return -1L;
+        }
+
+        return addMessagesIntoQueue(dbIndex, queueName, values);
     }
 
     public String getMessageFromQueue(final int dbIndex, final String key){
@@ -121,6 +135,15 @@ public final class JedisPoolUtils {
             String execute() {
                 // 出队
                 return jedis.lpop(key);
+            }
+        }.getResult();
+    }
+
+    public Long getListLen(final int dbIndex, final String key){
+        return new Executor<Long>(jedisPool, dbIndex) {
+            @Override
+            Long execute() {
+                return jedis.llen(key);
             }
         }.getResult();
     }
