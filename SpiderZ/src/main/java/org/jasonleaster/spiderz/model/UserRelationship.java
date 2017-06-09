@@ -2,6 +2,7 @@ package org.jasonleaster.spiderz.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Author: jasonleaster
@@ -11,6 +12,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class UserRelationship {
+
+    private String fromUrlToken;
+
+    private String fromUserId;
+
+    @JsonProperty("url_token")
+    private String toUrlToken;
+
+    @JsonProperty("id")
+    private String toUserId;
 
     @JsonProperty("is_followed")
     private boolean isFollowed;
@@ -30,12 +41,6 @@ public class UserRelationship {
     @JsonProperty("type")
     private String type;
 
-    @JsonProperty("url_token")
-    private String urlToken;
-
-    @JsonProperty("id")
-    private String id;
-
     @JsonProperty("articles_count")
     private Integer articlesCount;
 
@@ -43,7 +48,7 @@ public class UserRelationship {
     private String name;
 
     @JsonProperty("is_advertiser")
-    private String isAdvertiser;
+    private boolean isAdvertiser;
 
     @JsonProperty("headline")
     private String headline;
@@ -62,6 +67,38 @@ public class UserRelationship {
 
     @JsonProperty("follower_count")
     private Integer followerCount;
+
+    public String getFromUrlToken() {
+        return fromUrlToken;
+    }
+
+    public void setFromUrlToken(String fromUrlToken) {
+        this.fromUrlToken = fromUrlToken;
+    }
+
+    public String getFromUserId() {
+        return fromUserId;
+    }
+
+    public void setFromUserId(String fromUserId) {
+        this.fromUserId = fromUserId;
+    }
+
+    public String getToUrlToken() {
+        return toUrlToken;
+    }
+
+    public void setToUrlToken(String toUrlToken) {
+        this.toUrlToken = toUrlToken;
+    }
+
+    public String getToUserId() {
+        return toUserId;
+    }
+
+    public void setToUserId(String toUserId) {
+        this.toUserId = toUserId;
+    }
 
     public boolean isFollowed() {
         return isFollowed;
@@ -111,22 +148,6 @@ public class UserRelationship {
         this.type = type;
     }
 
-    public String getUrlToken() {
-        return urlToken;
-    }
-
-    public void setUrlToken(String urlToken) {
-        this.urlToken = urlToken;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public Integer getArticlesCount() {
         return articlesCount;
     }
@@ -140,14 +161,18 @@ public class UserRelationship {
     }
 
     public void setName(String name) {
-        this.name = name;
+        try{
+            this.name = new String(name.getBytes(), "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            this.name = name;
+        }
     }
 
-    public String getIsAdvertiser() {
+    public boolean getIsAdvertiser() {
         return isAdvertiser;
     }
 
-    public void setIsAdvertiser(String isAdvertiser) {
+    public void setIsAdvertiser(boolean isAdvertiser) {
         this.isAdvertiser = isAdvertiser;
     }
 

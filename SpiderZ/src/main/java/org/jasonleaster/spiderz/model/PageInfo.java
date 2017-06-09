@@ -12,6 +12,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class PageInfo {
 
+    @JsonProperty("is_start")
+    private boolean isStart;
+
     @JsonProperty("is_end")
     private boolean isEnd;
 
@@ -21,17 +24,14 @@ public class PageInfo {
     @JsonProperty("previous")
     private String previous;
 
-    @JsonProperty("is_start")
-    private String isStart;
-
     @JsonProperty("next")
     private String next;
 
-    public boolean isEnd() {
+    public boolean getIsEnd() {
         return isEnd;
     }
 
-    public void setEnd(boolean end) {
+    public void setIsEnd(boolean end) {
         isEnd = end;
     }
 
@@ -51,11 +51,11 @@ public class PageInfo {
         this.previous = previous;
     }
 
-    public String getIsStart() {
+    public boolean getIsStart() {
         return isStart;
     }
 
-    public void setIsStart(String isStart) {
+    public void setIsStart(boolean isStart) {
         this.isStart = isStart;
     }
 
