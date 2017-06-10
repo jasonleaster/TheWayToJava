@@ -1,10 +1,8 @@
 SET FOREIGN_KEY_CHECKS=0;
 
-
-
 -- http://www.cnblogs.com/lsx1993/p/4663147.html 看看对创建索引的建议，不要使用uuid当innodb数据库的主键
-DROP TABLE if EXISTS users;
-CREATE TABLE users (
+DROP TABLE if EXISTS tbl_users;
+CREATE TABLE tbl_users (
     userId                 CHAR(32)     NOT NULL             COMMENT '用户的唯一uuid，hash索引值',
     urlToken               VARCHAR(50)  NOT NULL             COMMENT '用户查询使用的id参数，通常就是第一个用户名',
     name                   VARCHAR(100) NOT NULL DEFAULT '' COMMENT '用户名称',
@@ -27,9 +25,9 @@ CREATE TABLE users (
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COMMENT='用户信息表';
 
 -- 一对多的用户关系表
-DROP TABLE if EXISTS relationships;
-CREATE TABLE relationships (
-    fromUserId             CHAR(32)     NOT NULL             COMMENT '用户的唯一uuid，hash索引值',
+DROP TABLE if EXISTS tbl_relationships;
+CREATE TABLE tbl_relationships (
+    fromUserId             CHAR(32)     DEFAULT NULL         COMMENT '用户的唯一uuid，hash索引值',
     toUserId               CHAR(32)     DEFAULT NULL         COMMENT '用户的唯一uuid，hash索引值',
     fromUrlToken           VARCHAR(50)  NOT NULL             COMMENT '用户查询使用的id参数，通常就是第一个用户名',
     toUrlToken             VARCHAR(50)  NOT NULL             COMMENT '用户查询使用的id参数，通常就是第一个用户名',
@@ -46,6 +44,5 @@ CREATE TABLE relationships (
     url                    VARCHAR(200) NOT NULL DEFAULT '' COMMENT '用户名称',
     avatarUrlTemplate      VARCHAR(200) NOT NULL DEFAULT '' COMMENT '用户名称',
     avatarUrl              VARCHAR(200) NOT NULL DEFAULT '' COMMENT '用户名称',
-    PRIMARY KEY (fromUserId, toUserId),
-    INDEX Index_urlToken (fromUrlToken, toUrlToken)
+    PRIMARY KEY (fromUrlToken, toUrlToken)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COMMENT='用户关系表';
