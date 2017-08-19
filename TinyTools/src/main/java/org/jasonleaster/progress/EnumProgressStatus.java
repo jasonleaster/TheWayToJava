@@ -9,6 +9,8 @@ package org.jasonleaster.progress;
  */
 public enum EnumProgressStatus {
 
+    NOTSTARTED("notStarted"),
+
     START("start"),
 
     RUNNING("running"),

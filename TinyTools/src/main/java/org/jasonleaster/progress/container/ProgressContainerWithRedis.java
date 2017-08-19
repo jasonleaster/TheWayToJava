@@ -1,4 +1,6 @@
-package org.jasonleaster.progress;
+package org.jasonleaster.progress.container;
+
+import org.jasonleaster.progress.IProgressHandler;
 
 /**
  * Author: jasonleaster
@@ -6,6 +8,15 @@ package org.jasonleaster.progress;
  * Email : jasonleaster@gmail.com
  * Description:
  */
-public class ProgressContainerWithRedis {
+public class ProgressContainerWithRedis implements IProgressInstanceContainer {
 
+    @Override
+    public IProgressHandler getProgress(String progressId) {
+        return null;
+    }
+
+    @Override
+    public void putProgress(IProgressHandler progress) {
+
+    }
 }
