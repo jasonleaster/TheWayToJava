@@ -3,6 +3,8 @@ package org.jasonleaster.progress;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,9 +13,10 @@ import lombok.Setter;
  * Date  : 2017/8/18
  * Email : jasonleaster@gmail.com
  * Description:
+ *
  */
-@Setter
-@Getter
+@Data
+@EqualsAndHashCode
 public abstract class AbstractProgressInfo implements Serializable{
 
     protected String progressId;

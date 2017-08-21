@@ -79,32 +79,32 @@ class DefaultProgressHandler implements IProgressHandler {
 
     @Override
     public AbstractProgressInfo getProgressInfo() {
+        if (subProgressHandlers == null || subProgressHandlers.size() == 0) {
+            return new BasicProgressInfo(progressInfo);
+        }
+
+        int finishedCounts = 0;
+        int totalCounts = subProgressHandlers.size();
+        List<AbstractProgressInfo> subProgressInfo = new ArrayList<>();
+        for (IProgressHandler handler : subProgressHandlers) {
+
+            AbstractProgressInfo progressInfo = handler.getProgressInfo();
+            subProgressInfo.add(progressInfo);
+
+            if (progressInfo != null
+                && progressInfo.getStatus() == EnumProgressStatus.FINISHED) {
+                finishedCounts++;
+            }
+        }
+
+        if (finishedCounts == totalCounts) {
+            this.end();
+        } else{
+            this.update(finishedCounts * 100. / totalCounts);
+        }
 
         AbstractProgressInfo snapshot = new BasicProgressInfo(progressInfo);
-
-        if (subProgressHandlers != null) {
-            int finishedCounts = 0;
-            int totalCounts = subProgressHandlers.size();
-            List<AbstractProgressInfo> subProgressInfo = new ArrayList<>();
-            for (IProgressHandler handler : subProgressHandlers) {
-
-                AbstractProgressInfo progressInfo = handler.getProgressInfo();
-                subProgressInfo.add(progressInfo);
-
-                if (progressInfo != null
-                    && progressInfo.getStatus() == EnumProgressStatus.FINISHED) {
-                    finishedCounts++;
-                }
-            }
-
-            if (finishedCounts == totalCounts){
-                snapshot.setStatus(EnumProgressStatus.FINISHED);
-            } else {
-                snapshot.setStatus(EnumProgressStatus.RUNNING);
-            }
-            snapshot.setValue(finishedCounts * 100. / totalCounts);
-            snapshot.setSubProgress(subProgressInfo);
-        }
+        snapshot.setSubProgress(subProgressInfo);
 
         // return a value based copy(Shallow Copy) of this object
         return snapshot;
