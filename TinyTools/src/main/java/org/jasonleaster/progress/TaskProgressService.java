@@ -1,6 +1,7 @@
 package org.jasonleaster.progress;
 
 import java.util.Arrays;
+import java.util.concurrent.locks.ReentrantLock;
 import org.jasonleaster.progress.container.IProgressInstanceContainer;
 import org.jasonleaster.progress.container.InMemoryProgressContainer;
 

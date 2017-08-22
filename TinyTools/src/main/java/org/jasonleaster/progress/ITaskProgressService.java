@@ -27,9 +27,13 @@ public interface ITaskProgressService {
     IProgressHandler createProgressHandler(String mainProgressId, String mainProgressName, IProgressHandler[] subHandlers);
 
     /**
-     * Get the basic information of the progress with the specified Id of that progress
+     * Get the progress information with the given id of progress.
+     * {@link null} will be returned if there doesn't exist a progress
+     * with the give id {@param progressId}.
+     * Otherwise, the basic progress status and value will be returned.
+     *
      * @param progressId Id of progress
-     * @return {@link AbstractProgressInfo}
+     * @return {@link AbstractProgressInfo} or null
      */
     AbstractProgressInfo getProgressInfo(String progressId);
 }
