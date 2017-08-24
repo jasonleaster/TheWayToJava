@@ -4,7 +4,8 @@ package com.jasonleaster.example.jvm.oom;
  * Author: jasonleaster
  * Date  : 2017/6/30
  * Email : jasonleaster@gmail.com
- * Description:
+ * VMargs : -Xss 128k
+ * 使用-Xss参数限制栈内存容量
  *
  */
 public class JavaVMStackSOF {
