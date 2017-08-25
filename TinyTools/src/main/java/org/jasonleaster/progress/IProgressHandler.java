@@ -32,6 +32,8 @@ public interface IProgressHandler {
      */
     void end();
 
+    void addSubProgress(IProgressHandler subProgress, double weight);
+
     /**
      * @return The ID of this progress.
      */

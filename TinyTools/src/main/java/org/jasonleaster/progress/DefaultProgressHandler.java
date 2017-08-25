@@ -3,6 +3,7 @@ package org.jasonleaster.progress;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 /**
  * Author: jasonleaster
@@ -11,6 +12,8 @@ import java.util.List;
  * Description:
  */
 class DefaultProgressHandler implements IProgressHandler {
+
+    private final static Logger logger = Logger.getLogger(DefaultProgressHandler.class);
 
     private BasicProgressInfo progressInfo;
 
@@ -73,6 +76,24 @@ class DefaultProgressHandler implements IProgressHandler {
     }
 
     @Override
+    public void addSubProgress(IProgressHandler subProgress, double weight) {
+        if (weight < 0){
+            logger.error("Failed to add sub-progress for the progress");
+            logger.error("Parameter @weight should not smaller than 0 !"
+                + "Please that's bigger than zero and try again later !");
+            return;
+        }
+
+        if (subProgress != null){
+            if (this.progressInfo.getStatus() != EnumProgressStatus.NOTSTARTED){
+                logger.error("Can't add sub-progress after started.");
+                return;
+            }
+            this.subProgressHandlers.add(subProgress);
+        }
+    }
+
+    @Override
     public String getProgressId() {
         return progressInfo.getProgressId();
     }
@@ -85,11 +106,11 @@ class DefaultProgressHandler implements IProgressHandler {
 
         int finishedCounts = 0;
         int totalCounts = subProgressHandlers.size();
-        List<AbstractProgressInfo> subProgressInfo = new ArrayList<>();
+        List<AbstractProgressInfo> subProgressInfoSnapshot = new ArrayList<>();
         for (IProgressHandler handler : subProgressHandlers) {
 
             AbstractProgressInfo progressInfo = handler.getProgressInfo();
-            subProgressInfo.add(progressInfo);
+            subProgressInfoSnapshot.add(progressInfo);
 
             if (progressInfo != null
                 && progressInfo.getStatus() == EnumProgressStatus.FINISHED) {
@@ -104,7 +125,7 @@ class DefaultProgressHandler implements IProgressHandler {
         }
 
         AbstractProgressInfo snapshot = new BasicProgressInfo(progressInfo);
-        snapshot.setSubProgress(subProgressInfo);
+        snapshot.setSubProgress(subProgressInfoSnapshot);
 
         // return a value based copy(Shallow Copy) of this object
         return snapshot;

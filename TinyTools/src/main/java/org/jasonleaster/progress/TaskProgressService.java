@@ -17,6 +17,8 @@ public final class TaskProgressService implements ITaskProgressService{
 
     private static final IProgressInstanceContainer container = new InMemoryProgressContainer();
 
+    private TaskProgressService() {}
+
     public static ITaskProgressService getInstance(){
         return instance;
     }
