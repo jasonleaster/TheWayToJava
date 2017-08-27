@@ -73,6 +73,12 @@ public class IProgressHandlerTest {
     }
 
     @Test
+    public void differentWayToCreateSubProgress()
+    {
+        // TODO
+    }
+
+    @Test
     public void shouldReturnMultiTaskProgressStatus(){
         String mainProgressId = "mainProgressId";
         int numOfSubProgress = 3;

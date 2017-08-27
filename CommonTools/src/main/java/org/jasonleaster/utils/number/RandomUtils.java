@@ -1,4 +1,4 @@
-package com.JUtils.math;
+package org.jasonleaster.utils.number;
 
 import java.util.Random;
 

@@ -26,41 +26,51 @@ public final class JedisPoolUtils {
 
     private static final Logger log = Logger.getLogger(JedisPoolUtils.class);
 
-    private static JedisPoolUtils instance;
+    private static volatile JedisPoolUtils instance;
 
     private static JedisPool jedisPool;
 
-    public static JedisPoolUtils getInstance() throws IOException {
+    public static JedisPoolUtils getInstance() {
         if (instance != null) {
             return instance;
         }
 
         synchronized (JedisPoolUtils.class){
-            instance = new JedisPoolUtils();
+            if (instance == null) {
+                Properties redisProperty = new Properties();
 
-            Properties redisProperty = Resources.getResourceAsProperties("redis.properties");
+                try {
+                    redisProperty = Resources.getResourceAsProperties("redis.properties");
+                } catch (IOException e){
+                    log.info(JedisPoolUtils.class.getName() + " Initialize failed!");
+                }
 
-            int maxActive = Integer.valueOf(redisProperty.getProperty("redis.pool.maxActive"));
-            int maxIdle   = Integer.valueOf(redisProperty.getProperty("redis.pool.maxIdle"));
-            long maxWait  = Integer.valueOf(redisProperty.getProperty("redis.pool.maxWait"));
-            String host   = redisProperty.getProperty("redis.host");
+                Integer maxActive = Integer.valueOf(redisProperty.getProperty("redis.pool.maxActive"));
+                Integer maxIdle   = Integer.valueOf(redisProperty.getProperty("redis.pool.maxIdle"));
+                Integer maxWait   = Integer.valueOf(redisProperty.getProperty("redis.pool.maxWait"));
+                String host       = redisProperty.getProperty("redis.host");
 
-            if (maxActive > 0 && maxIdle > 0 && maxWait > 0 && host != null && !host.isEmpty()) {
-                // 创建jedis池配置实例
-                JedisPoolConfig config = new JedisPoolConfig();
+                maxActive = maxActive != null ? maxActive : 8;
+                maxIdle   = maxIdle   != null ? maxIdle   : 8;
+                maxWait   = maxWait   != null ? maxWait   : 1000;
 
-                // 设置池配置项值
-                config.setMaxTotal(maxActive);
-                config.setMaxIdle(maxIdle);
-                config.setMaxWaitMillis(maxWait);
-                config.setTestOnBorrow(true);
-                config.setTestOnReturn(true);
+                if (maxActive > 0 && maxIdle > 0 && maxWait > 0 && host != null && !host.isEmpty()) {
+                    // 创建jedis池配置实例
+                    JedisPoolConfig config = new JedisPoolConfig();
 
-                // 根据配置文件,创建shared池实例
-                jedisPool = new JedisPool(config, host);
-            }else{
-                log.error("Error Parameter!");
-                return null;
+                    // 设置池配置项值
+                    config.setMaxTotal(maxActive);
+                    config.setMaxIdle(maxIdle);
+                    config.setMaxWaitMillis(maxWait);
+                    config.setTestOnBorrow(true);
+                    config.setTestOnReturn(true);
+
+                    // 根据配置文件,创建shared池实例
+                    jedisPool = new JedisPool(config, host);
+                }else{
+                    log.error("Error Parameter!");
+                }
+                instance = new JedisPoolUtils();
             }
         }
 

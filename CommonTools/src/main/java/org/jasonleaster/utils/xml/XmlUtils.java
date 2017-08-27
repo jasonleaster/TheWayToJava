@@ -19,10 +19,7 @@ public final class XmlUtils {
 
     private static final Logger log = Logger.getLogger(XmlUtils.class);
 
-    private static final XmlUtils instance = new XmlUtils();
-
-    public XmlUtils() {
-    }
+    private XmlUtils() {}
 
     public static <T> T parseXmlFromFile(String xmlFilePath, Class<T> clazz) {
 
